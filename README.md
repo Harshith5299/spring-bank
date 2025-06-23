@@ -1,2 +1,2 @@
 # spring-bank
-Basic Bank Application with React Front end and Spring-MySQL Back end
+Basic Bank Application with React Front end and SpringBoot-MySQL Back end
