@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @AllArgsConstructor
 @Component
-@ConfigurationProperties(value = "app.info")
+@ConfigurationProperties(prefix = "spring.application")
 public class AppInfo {
     private String name;
     private String version;

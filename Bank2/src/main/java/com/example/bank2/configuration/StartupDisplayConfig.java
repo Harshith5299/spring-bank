@@ -22,6 +22,9 @@ public class StartupDisplayConfig implements ApplicationListener<ApplicationStar
     @Autowired
     private ServerProperties serverProperties;
 
+    @Value("${spring.profiles.active}")
+    private String activeProfile;
+
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
         System.out.println("=== My Custom Spring Boot Application ===");
@@ -30,7 +33,11 @@ public class StartupDisplayConfig implements ApplicationListener<ApplicationStar
         System.out.println("Version: " + appInfo.getVersion());
         System.out.println("Data Source Url: " + dataSourceConfig);
         System.out.println("Jpa Open View: " + jpaConfig.getOpenInView());
-        System.out.println("Server Address: http://localhost:" + serverProperties.getPort());
+        System.out.println("Active Profile: " + activeProfile);
+
+        String serverAddress = activeProfile.equals("docker") ? "http://0.0.0.0:" : "http://localhost:";
+        System.out.println("Server Address: " + serverAddress + serverProperties.getPort());
+
         System.out.println("Available Endpoints:");
         System.out.println("  - GET /bank2/helloWorld: Returns a simple 'Hello World' message.");
         System.out.println("  - POST /bank2/createAccount: Provide account details in JSON format to create a new account.");

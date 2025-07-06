@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+    # MySQL service for the application
+  mysql:
+    # Uses MySQL 8 from Docker Hub
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_DATABASE: bank2 # Creates initial database
+      MYSQL_ROOT_PASSWORD: Panzer@5299 # Sets root password
+
+    # Note: The MySQL container listens on port 3306 internally, but we map it to 3307 on the host to prevent conflicts
+    # with the existing local mySQL instance which also has a port named 3306 that was created by the MySQL installer by
+    # default.
+    ports:
+      - "3307:3306" # Maps host's 3307 to container's 3306
+    healthcheck: # Ensures MySQL is ready
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    # The SpringBoot App service that depends on the MySQL service
+  app:
+    build: .  # Builds the Docker image from the current directory
+    depends_on:
+      mysql:
+        condition: service_healthy # Waits for MySQL to be ready
+    ports:
+      - "8080:8080" # Maps host port 8080 to container port
+    environment:
+      SPRING_PROFILES_ACTIVE: docker # Uses docker profile from application.yml
