@@ -1,0 +1,77 @@
+
+# Bank2 Application Configuration (Common for all profiles)
+# Sets default profile to 'local'
+# Defines application name and version
+spring:
+  profiles:
+    active: local
+
+  application:
+    name: Bank2
+    version: 1.0.0
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+
+  # Enables JMX monitoring
+  jmx:
+    enabled: true
+
+# Configures the logging level for the application
+# Sets the root logging level to INFO
+# Sets the logging level for the 'com.bank2' package to DEBUG
+# This allows for detailed logging of the application's internal operations
+management:
+  endpoints:
+    jmx:
+      exposure:
+        include: "*"
+
+# In .yml files, we can define multiple profiles for different environments using the `spring.config.activate.on-profile` property.
+# The `---` separator is used to define different profiles in the same file.
+--- ###Local Config###
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  # Local MySQL database configuration
+  # Connects to local MySQL instance
+  # Runs on localhost:8087
+  # Used for local development
+  datasource:
+    url: jdbc:mysql://localhost/bank2?createDatabaseIfNotExist=true
+    username: root
+    password: Panzer@5299
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# Sets the Local Spring server port to 8087
+# Note: This is the port used for local development
+server:
+  port: 8087
+  address: localhost
+
+--- ###Docker Config###
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  # Docker MySQL database configuration
+  # Connects to MySQL service in Docker network
+  # Runs on port 3306 as defined in docker-compose.yml
+
+  datasource:
+    ### Note: The URL is set to connect to the MySQL service in the Docker network, default port is 3306
+    url: jdbc:mysql://mysql:3306/bank2?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: Panzer@5299
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# Sets the Docker Spring server port to 8080
+# Note: The Docker container maps port 8080 to the host's port 8080
+server:
+  port: 8080
+  address: 0.0.0.0
